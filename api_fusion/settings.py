@@ -18,7 +18,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY", default="dev-insecure-secret-key-change-me")
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+ALLOWED_HOSTS = ['apifusion-ukol.onrender.com', 'localhost', '127.0.0.1']
 
 # ------------------------------------------------------------------
 # Applications
