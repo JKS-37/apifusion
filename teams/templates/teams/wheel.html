@@ -1,0 +1,58 @@
+{% extends "teams/base.html" %}
+{% load static %}
+{% block title %}Spin the Wheel - API Fusion{% endblock %}
+{% block content %}
+
+<h1 class="page-title">Welcome, {{ profile.team_name }} 👋</h1>
+
+{% if profile.is_locked or profile.spin_count >= 2 %}
+    <!-- ===================== LOCKED DASHBOARD VIEW ===================== -->
+    <section class="locked-dashboard">
+        <div class="locked-banner">🔒 Your team is locked. Spins used: {{ profile.spin_count }}/2</div>
+        <h2>Your Assigned APIs:</h2>
+        <div class="api-cards">
+            <div class="api-card">
+                <span class="api-card-label">API #1</span>
+                <span class="api-card-name">{{ profile.api_1 }}</span>
+            </div>
+            <div class="api-card">
+                <span class="api-card-label">API #2</span>
+                <span class="api-card-name">{{ profile.api_2 }}</span>
+            </div>
+        </div>
+        <p class="locked-note">Build your integration project using these two APIs. Good luck! 🚀</p>
+    </section>
+
+{% else %}
+    <!-- ===================== WHEEL VIEW ===================== -->
+    <section class="wheel-section">
+        <p class="spin-status">Spins used: <strong id="spin-count-display">{{ profile.spin_count }}</strong> / 2</p>
+
+        <div class="wheel-wrapper">
+            <div class="wheel-pointer"></div>
+            <canvas id="wheelCanvas" width="480" height="480"></canvas>
+        </div>
+
+        <button id="spinBtn" class="btn btn-primary btn-spin">SPIN THE WHEEL</button>
+        <div id="spinError" class="field-error" style="display:none;"></div>
+
+        <div class="assigned-so-far" id="assignedSoFar">
+            {% if profile.api_1 %}
+            <div class="api-card small">
+                <span class="api-card-label">API #1</span>
+                <span class="api-card-name">{{ profile.api_1 }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+{% endif %}
+
+{% csrf_token %}
+<script>
+    window.API_POOL = {{ api_pool_json|safe }};
+    window.SPIN_URL = "{% url 'spin' %}";
+    window.SPIN_COUNT = {{ profile.spin_count }};
+    window.IS_LOCKED = {{ profile.is_locked|yesno:"true,false" }};
+</script>
+<script src="{% static 'teams/js/wheel.js' %}"></script>
+{% endblock %}
