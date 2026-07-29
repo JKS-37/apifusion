@@ -21,6 +21,8 @@ API_POOL = [
     "Unsplash (Images)",
     "Advice Slip API",
     "GitHub API",
+    "Jikan Anime API",
+    "Gemini/openAI api"
 ]
 
 
