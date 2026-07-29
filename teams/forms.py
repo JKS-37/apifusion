@@ -2,9 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import TeamProfile
-
-
 class TeamRegistrationForm(UserCreationForm):
     leader_contact = forms.CharField(
         max_length=150,
@@ -19,11 +16,11 @@ class TeamRegistrationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # 1. Clear password help text
+        # Clear password help text
         self.fields["password1"].help_text = None
         self.fields["password2"].help_text = None
 
-        # 2. CLEAR BUILT-IN USERNAME VALIDATORS TO ALLOW SPACES
+        # 1. REMOVE ALL BUILT-IN USERNAME VALIDATORS
         self.fields["username"].validators = []
         self.fields["username"].help_text = "Required. 150 characters or fewer."
 
@@ -33,15 +30,18 @@ class TeamRegistrationForm(UserCreationForm):
         if not username:
             raise forms.ValidationError("Please enter a valid team name.")
 
-        # Check for duplicate usernames (case-insensitive)
+        # Check for duplicates (case-insensitive)
         if User.objects.filter(username__iexact=username).exists():
             raise forms.ValidationError("This team name is already taken.")
 
         return username
 
     def save(self, commit=True):
-        user = super().save(commit=commit)
+        # 2. PREVENT DJANGO MODEL FROM RE-CHECKING VALIDATORS ON SAVE
+        user = super().save(commit=False)
+        user.username = self.cleaned_data["username"]
         if commit:
+            user.save()
             TeamProfile.objects.create(
                 user=user,
                 leader_contact=self.cleaned_data["leader_contact"],
