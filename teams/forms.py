@@ -6,14 +6,10 @@ from .models import TeamProfile
 
 
 class TeamRegistrationForm(UserCreationForm):
-    """
-    Registration form: Team Name (username), Password, and
-    Leader Contact Email/Phone.
-    """
     leader_contact = forms.CharField(
         max_length=150,
         label="Leader Contact (Email)",
-        widget=forms.TextInput(attrs={"placeholder": "leader@example.com"}),
+        widget=forms.TextInput(attrs={"placeholder": "leader@example.com or +91XXXXXXXXXX"}),
     )
 
     class Meta:
@@ -21,10 +17,26 @@ class TeamRegistrationForm(UserCreationForm):
         fields = ["username", "leader_contact", "password1", "password2"]
         labels = {"username": "Team Name"}
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 1. Clear password help text
+        self.fields["password1"].help_text = None
+        self.fields["password2"].help_text = None
+
+        # 2. CLEAR BUILT-IN USERNAME VALIDATORS TO ALLOW SPACES
+        self.fields["username"].validators = []
+        self.fields["username"].help_text = "Required. 150 characters or fewer."
+
     def clean_username(self):
-        username = self.cleaned_data["username"].strip()
+        username = self.cleaned_data.get("username", "").strip()
+
+        if not username:
+            raise forms.ValidationError("Please enter a valid team name.")
+
+        # Check for duplicate usernames (case-insensitive)
         if User.objects.filter(username__iexact=username).exists():
             raise forms.ValidationError("This team name is already taken.")
+
         return username
 
     def save(self, commit=True):
@@ -35,9 +47,3 @@ class TeamRegistrationForm(UserCreationForm):
                 leader_contact=self.cleaned_data["leader_contact"],
             )
         return user
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["password1"].help_text = None
-        self.fields["password2"].help_text = None
-    def clean_username(self):
-        username = self.cleaned_data.get("username", "").strip()
