@@ -15,11 +15,11 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # ------------------------------------------------------------------
 # Core settings
 # ------------------------------------------------------------------
-SECRET_KEY = env("SECRET_KEY", default="dev-insecure-secret-key-change-me")
+SECRET_KEY = env("SECRET_KEY", default="dev-insecure-secret-key-change-in-prod")
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = ['apifusion-ukol.onrender.com', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['apifusion-hrwt.onrender.com','localhost','127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://apifusion-hrwt.onrender.com']
 # ------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------
