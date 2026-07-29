@@ -12,8 +12,8 @@ class TeamRegistrationForm(UserCreationForm):
     """
     leader_contact = forms.CharField(
         max_length=150,
-        label="Leader Contact (Email/Phone)",
-        widget=forms.TextInput(attrs={"placeholder": "leader@example.com or +91XXXXXXXXXX"}),
+        label="Leader Contact (Email)",
+        widget=forms.TextInput(attrs={"placeholder": "leader@example.com"}),
     )
 
     class Meta:
@@ -35,3 +35,7 @@ class TeamRegistrationForm(UserCreationForm):
                 leader_contact=self.cleaned_data["leader_contact"],
             )
         return user
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["password1"].help_text = None
+        self.fields["password2"].help_text = None
