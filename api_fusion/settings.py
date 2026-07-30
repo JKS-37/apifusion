@@ -1,4 +1,5 @@
-
+import dj_database_url
+import os
 
 from pathlib import Path
 import environ
@@ -67,16 +68,17 @@ WSGI_APPLICATION = "api_fusion.wsgi.application"
 # ------------------------------------------------------------------
 # Database
 # ------------------------------------------------------------------
-database_url = env("DATABASE_URL", default="")
-if database_url:
-    DATABASES = {"default": env.db_url("DATABASE_URL")}
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+# If there is a DATABASE_URL environment variable (like on Render), use that instead
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    DATABASES['default'] = dj_database_url.parse(database_url)
 
 # ------------------------------------------------------------------
 # Password validation

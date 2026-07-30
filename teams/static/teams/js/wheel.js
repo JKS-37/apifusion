@@ -17,7 +17,7 @@
         "#0984e3", "#e17055", "#00b894", "#a29bfe",
         "#e84393", "#74b9ff", "#55efc4", "#ffeaa7",
         "#d63031", "#81ecec", "#fab1a0", "#636e72",
-        "#aca3e9", "#956e6e",
+        "#aca3e9", "#956e6e"
     ];
 
     let currentRotation = 0; // radians, tracks cumulative wheel rotation
