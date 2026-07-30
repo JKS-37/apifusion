@@ -2,22 +2,14 @@ import dj_database_url
 import os
 
 from pathlib import Path
-import environ
-import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-# Read .env file if present
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # ------------------------------------------------------------------
 # Core settings
 # ------------------------------------------------------------------
-SECRET_KEY = env("SECRET_KEY", default="dev-insecure-secret-key-change-in-prod")
-DEBUG = env.bool("DEBUG", default=True)
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-secret-key-change-in-prod")
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ['apifusion-hrwt.onrender.com','localhost','127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://apifusion-hrwt.onrender.com']
@@ -123,6 +115,6 @@ LOGOUT_REDIRECT_URL = "login"
 # Security (production)
 # ------------------------------------------------------------------
 if not DEBUG:
-    SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+    SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "True") == "True"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
